@@ -15,6 +15,7 @@ export default function TaskForm({ addTask, editTask }) {
     title: "",
     description: "",
     priority: "low",
+    dueDate: "",
   });
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function TaskForm({ addTask, editTask }) {
   const handleSubmit = () => {
     if (newTask.title.trim()) {
       addTask(newTask);
-      setNewTask({ title: "", description: "", priority: "low" });
+      setNewTask({ title: "", description: "", priority: "low", dueDate: "" });
     }
   };
 
@@ -64,6 +65,12 @@ export default function TaskForm({ addTask, editTask }) {
             <SelectItem value="low">Low</SelectItem>
           </SelectContent>
         </Select>
+        <Input
+          type="date"
+          value={newTask.dueDate}
+          onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+          className="w-full h-12"
+        />
       </div>
       <Button
         onClick={handleSubmit}

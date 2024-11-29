@@ -1,5 +1,16 @@
 /* eslint-disable react/prop-types */
-import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { Button } from "./ui/button";
 
 export default function TaskItem({
   task,
@@ -20,16 +31,63 @@ export default function TaskItem({
 
   return (
     <li
-      className={`p-4 mb-4 rounded shadow-md transition-transform transform h-40
-         hover:scale-105 ${completedStyle} flex flex-col justify-between`}
+      className={`p-4 mb-4 rounded shadow-md transition-transform transform h-48 w-72
+       hover:scale-105 ${completedStyle} flex flex-col justify-between`}
     >
-      <div>
-        <h2 className="text-lg font-semibold mb-1">{task.title}</h2>
-        <p className="text-sm text-gray-700 mb-2 mt-3 overflow-hidden text-ellipsis whitespace-nowrap">
-          {task.description}
-        </p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h2 className="text-lg font-semibold mb-1">{task.title}</h2>
+          <p className="text-sm text-gray-700 mb-2 mt-3 overflow-hidden text-ellipsis whitespace-nowrap">
+            {task.description}
+          </p>
+          {/* Display Due Date */}
+          {task.dueDate && (
+            <p className="text-xs text-gray-500">
+              <strong>Due Date:</strong>{" "}
+              {new Date(task.dueDate).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </p>
+          )}
+        </div>
+
+        {/* Delete Button */}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="danger"
+              className="text-xs bg-red-500 hover:bg-red-600 text-white px-6 py-1 rounded"
+            >
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this task? This action cannot be
+                undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={deleteTask}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
+
+      {/* Bottom Buttons */}
       <div className="flex justify-between mt-2">
+        <Button
+          onClick={startEditTask}
+          variant="primary"
+          className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-6 py-1 rounded shadow-md"
+        >
+          Update
+        </Button>
         <Button
           onClick={toggleComplete}
           variant="success"
@@ -40,20 +98,6 @@ export default function TaskItem({
           }`}
         >
           {task.completed ? "Undo" : "Completed"}
-        </Button>
-        <Button
-          onClick={startEditTask}
-          variant="primary"
-          className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded shadow-md transform hover:scale-110"
-        >
-          Edit
-        </Button>
-        <Button
-          onClick={deleteTask}
-          variant="danger"
-          className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-        >
-          Delete
         </Button>
       </div>
     </li>

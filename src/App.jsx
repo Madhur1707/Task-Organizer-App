@@ -1,4 +1,10 @@
 /* eslint-disable react/prop-types */
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { Input } from "./components/ui/input";
 import {
@@ -10,6 +16,7 @@ import {
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import { toast } from "sonner";
+import { Button } from "./components/ui/button";
 
 function App({ initialTasks = [] }) {
   const [tasks, setTasks] = useState(initialTasks);
@@ -88,65 +95,97 @@ function App({ initialTasks = [] }) {
     });
 
   return (
-    <div className="p-8">
-      <div className="flex mb-4 gap-5 w-full">
-        <h1 className="text-violet-500 text-2xl font-bold mb-3">
-          Task Management App
-        </h1>
-        {/* <h3 className="text-violet-500 text-2xl font-bold mb-3 ml-auto hidden md:block">
-          Stay Lit 🔥 Stay Organized! 💻
-        </h3> */}
-      </div>
-
-      <div className="flex mb-4 gap-5">
-        <Input
-          placeholder="Type for search tasks..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full h-12"
-        />
-
-        <Select
-          value={priorityFilter}
-          onValueChange={(value) => setPriorityFilter(value)}
-          className="w-full"
-        >
-          <SelectTrigger className="h-12">
-            <span>
-              {priorityFilter.charAt(0).toUpperCase() + priorityFilter.slice(1)}
-            </span>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="high">High</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="low">Low</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full md:w-1/3">
-          <TaskForm
-            addTask={addTask}
-            editTask={
-              editTaskId !== null
-                ? tasks.find((task) => task.id === editTaskId)
-                : null
-            }
+    <>
+      <header className="flex justify-between items-center p-4 bg-gray-100">
+        <h1 className="text-2xl font-bold text-blue-600">Task Organizer App</h1>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <Button className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+              Sign In
+            </Button>
+          </SignInButton>
+        </SignedOut>
+        <SignedIn>
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: "w-10 h-10",
+              },
+            }}
           />
-        </div>
+        </SignedIn>
+      </header>
 
-        <div className="w-full md:w-2/3">
-          <TaskList
-            tasks={filteredTasks}
-            toggleComplete={toggleComplete}
-            deleteTask={deleteTask}
-            startEditTask={startEditTask}
-          />
+      <SignedOut>
+        <div className="p-8 flex flex-col items-center justify-center min-h-screen bg-gray-100">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            Welcome to Task Organizer App
+          </h2>
+          <p className="text-lg text-gray-600 mb-6">
+            Manage your tasks effortlessly. Sign in to get started!
+          </p>
+          <SignInButton mode="modal">
+            <Button className="px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-violet-300">
+              Get Started
+            </Button>
+          </SignInButton>
         </div>
-      </div>
-    </div>
+      </SignedOut>
+
+      <SignedIn>
+        <div className="p-8 bg-gray-100">
+          <div className="flex mb-4 gap-5 w-full">
+            <Input
+              placeholder="Type for search tasks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-12"
+            />
+
+            <Select
+              value={priorityFilter}
+              onValueChange={(value) => setPriorityFilter(value)}
+              className="w-full"
+            >
+              <SelectTrigger className="h-12">
+                <span>
+                  {priorityFilter.charAt(0).toUpperCase() +
+                    priorityFilter.slice(1)}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="low">Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-1/3">
+              <TaskForm
+                addTask={addTask}
+                editTask={
+                  editTaskId !== null
+                    ? tasks.find((task) => task.id === editTaskId)
+                    : null
+                }
+              />
+            </div>
+
+            <div className="w-full md:w-2/3">
+              <TaskList
+                tasks={filteredTasks}
+                toggleComplete={toggleComplete}
+                deleteTask={deleteTask}
+                startEditTask={startEditTask}
+              />
+            </div>
+          </div>
+        </div>
+      </SignedIn>
+    </>
   );
 }
 
